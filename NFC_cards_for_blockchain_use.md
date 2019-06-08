@@ -157,19 +157,21 @@ JCOP (Java Card)
 ----------------
 
 A JCOP card is an advanced and secure microcontroller capable of running
-applications in the chip. It is also able to store a provate key
-securely and issue ECC signatures.
+applications in the chip. It is also able to store a private key
+securely and issue ECC signatures. The card is designed so that the
+private key is nonextractable.
 
-JCOP cards are available on the market for about $15-20 a piece.
+JCOP cards are available on the market for about $4 to $20 a piece.
 
-A typical scenatio would be a terminal preparing an eosio transaction,
+A typical scenario would be a terminal preparing an eosio transaction,
 and the user card generating the ECC signature before broadcasting the
 transaction to the blockchain. The chip can also be programmed to ask
 user a PIN before issuing the signature.
 
 One potential attack vector is that the chip does not have any display,
 so the terminal may show a transaction that is different from what the
-user is really signing.
+user is really signing. So, the terminals need to be certified and
+secured.
 
 
 
