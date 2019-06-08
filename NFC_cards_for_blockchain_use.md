@@ -1,0 +1,188 @@
+NFC cards for blockchain use
+============================
+
+NFC chips are widely used for various kinds of human interaction:
+payment cards, digital ID, fidelity cards, access badges, travel fares,
+and so on.
+
+A large number of people are carrying a few NFC cards in their
+wallets. Also there are numerous other form factors on the market, such
+as key fobs, stickers, and tags, bearing an NFC chip inside. They can
+easily be purchased in bulk at less than 10 cents a piece.
+
+This article proposes some designs and workflows where NFC chip would be
+utilized together with an EOSIO blockchain.
+
+*WARNING*: the NFC chips in VISA or Mastercard credit cards are not very
+secure. One can read out the card number, cardcolder name, expiration
+date, and a list of latest transactions from the card with a basic NFC
+reader and some software skills. Therefore it is highly recommended NOT
+to use credit cards for any of purposes listed below.
+
+
+Using UID/NUID as user identifier
+---------------------------------
+
+Each ISO/IEC 14443-3 compliant NFC chip has a read-only block 0 of
+memory with a card identifier consisting of 4, 7, or 10 bytes. The
+4-byte identifiers are typical, and are not guaranteed to be unique.
+
+There are also NFC chips on the market with rewritable block 0.
+
+Also some chips contain a manufacturer's signature, confirming their
+authenticity.
+
+So, the UID can be used as a user identifier for tasks that do not
+require strong authentication. For example, customer fidelity points at
+a cafe or restaurant are of little material value, not worth the effort
+of faking or duplicating the card ID.
+
+
+### Use case: fidelity points
+
+A customer pays at a crypto-friendly shop or cafe, and taps one of their
+NFC cards on the NFC reader. This can be any NFC-enabled card that the
+customer choses to use as fidelity identifier.
+
+The reader program reads block 0 from the chip, and determins the type
+of the card and length of the UID. If possible, it also tries to read
+other read-only fields, such as manufacturer signature.
+
+Retrieved bytes are hashed with SHA256, and first 64 bits are taken as
+user identfier on the blockchain.
+
+Optionally, the hash can be signed with the shop's private key, and the
+signature bits would be used as user identifier. This protects other
+merchants from knowing that the user has fidelity points from a certain
+merchant.
+
+So, we get a 64-bit identifier which is not completely protected from
+collisions, and not protected from attacks, but still providing a good
+and low-cost means to identify a user.
+
+Once the user ID is calculated, the reader program performs a lookup on
+the blockchain if such user has their own eosio account. If it is the
+case, fidelity tokens are transferred to the user account.
+
+If the user does not have an account on the blockchain, a smart contract
+maintains a table of user balances. Whenever the user tells the
+shopkeeper their eosio account, the fidelity tokens would automatically
+be transferred at the next purchase.
+
+The main benefit of such a schema is low cost and ease of use for the
+customer. Almost everyone has at least one NFC card in their pocket, and
+the shop keeper can easily give out NFC items, such as key fobs or tags.
+
+The main drawback is that there's no self-service for the user: the NFC
+reader should be phyically controlled by the shopkeeper. If a user wants
+to do any operation at home, we do not have any means to avoid spoofing.
+
+
+
+Cards with encryption capabilities
+----------------------------------
+
+MIFARE Classic chips are most common and widespread. Unfortunately their
+built-in cryptography algorithm is insecure, and it takes minutes on a
+common computer hardware to crack the protected information. Thus these
+cards are not suitable for anything seious, except for using their UID
+as described above.
+
+
+MIFARE DESFire EV1 and EV2 chips provide secure communication with
+AES-128 encryption: a shared key is programmed on the card and is known
+to the reader. The reader and the card establish a challenge-response
+session that verifies that both sides have the same encryption key. As a
+result of challenge-response communication, a random session key is
+generated and used to read or write the data on the card.
+
+The secure area on the card may contain a number of data or value
+files. A data file can be read or written. A value can be incremented or
+decremented in a transactional manner.
+
+Such cards are available on the market at approximately $1 a piece.
+
+It wouldn't be wise to store a private key in such securre area, because
+the key would be transmitted to the reader device. This may lead to a
+leakage of the private key if the device is tampered.
+
+
+### Use case: strong authentication
+
+The DESFire card is used to identify the user without supervision
+(contrary to the example above where user authentication has to be
+happening in the presense of shopkeeper). Also this identification needs
+to be possible in an offline, isolated environment.
+
+The encryption AES-128 key is a combination of the 7-byte UID field and
+a PIN number that is known to the user only.
+
+The protected area contains a user ID (such as eosio account name), and
+a digital certificate of trusted authority confirming the identity.
+
+Once the user taps the terminal with the NFC card, the terminal asks for
+the PIN. Then using the card UID and the PIN, the terminal derives the
+AES-128 password and retrieves the encrypted data.
+
+Once the authentication has been successful, the terminal can perform an
+action on the blockchain, such as timestamping the user presence.
+
+The DESFire chip is configured with maximum number of authentication
+attempts, and locks itself up automatically in case of too many
+unsuccessful attempts. This protects the card from brute force attacks.
+
+
+### Use case: sequential offline timestamping
+
+In this scenario, a worker needs to visit a number of locations as a
+regular routine, in a defined sequence. The terminals in the field are
+standalone and not connected to the network.
+
+Like in the above use case, the encryption key is a combination of UID
+and user PIN.
+
+Unce the user authenticates, the terminal adds a record to the card
+containing its digital signature of the event.
+
+The next terminal in the sequence verifies the previous terminal's
+signature, thus guaranteeing that the worker performs the full routine
+in due sequence.
+
+The last terminal in the sequence is online, and sends the whole chain
+of events to the blockchain as a proof of performed work.
+
+
+
+JCOP (Java Card)
+----------------
+
+A JCOP card is an advanced and secure microcontroller capable of running
+applications in the chip. It is also able to store a provate key
+securely and issue ECC signatures.
+
+JCOP cards are available on the market for about $15-20 a piece.
+
+A typical scenatio would be a terminal preparing an eosio transaction,
+and the user card generating the ECC signature before broadcasting the
+transaction to the blockchain. The chip can also be programmed to ask
+user a PIN before issuing the signature.
+
+One potential attack vector is that the chip does not have any display,
+so the terminal may show a transaction that is different from what the
+user is really signing.
+
+
+
+
+
+
+
+
+## Copyright and License
+
+Copyright 2019 cc32d9, EOS Amsterdam.
+
+This work is licensed under a Creative Commons Attribution 4.0
+International License.
+
+http://creativecommons.org/licenses/by/4.0/
