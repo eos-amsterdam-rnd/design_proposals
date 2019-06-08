@@ -141,7 +141,7 @@ standalone and not connected to the network.
 Like in the above use case, the encryption key is a combination of UID
 and user PIN.
 
-Unce the user authenticates, the terminal adds a record to the card
+Once the user authenticates, the terminal adds a record to the card
 containing its digital signature of the event.
 
 The next terminal in the sequence verifies the previous terminal's
