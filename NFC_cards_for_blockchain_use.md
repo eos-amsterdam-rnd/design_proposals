@@ -234,7 +234,9 @@ include several checkins at different locations, and starting and
 finishing checkin would be done against a chip that is observed by
 independent parties.
 
-
+If accompanied with a 2-factor authentication, such as SMS verification,
+this applet can also serve as user identity, and provide electronic KYC
+certificate.
 
 
 
