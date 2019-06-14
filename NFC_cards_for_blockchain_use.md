@@ -107,7 +107,7 @@ the key would be transmitted to the reader device. This may lead to a
 leakage of the private key if the device is tampered.
 
 
-### Use case: strong authentication
+### Use case: strong authentication on a trusted terminal
 
 The DESFire card is used to identify the user without supervision
 (contrary to the example above where user authentication has to be
@@ -130,6 +130,10 @@ action on the blockchain, such as timestamping the user presence.
 The DESFire chip is configured with maximum number of authentication
 attempts, and locks itself up automatically in case of too many
 unsuccessful attempts. This protects the card from brute force attacks.
+
+The terminal still needs to be a physically trusted device: the
+information stored on the card is not completely secret, and it's
+possible to fake the data exchange if the terminal is tampered.
 
 
 ### Use case: sequential offline timestamping
@@ -173,6 +177,62 @@ so the terminal may show a transaction that is different from what the
 user is really signing. So, the terminals need to be certified and
 secured.
 
+
+
+### Use case: signature tag
+
+A JCOP applet is initialized with the following parameters:
+
+* domain ID: a 32-bit integer;
+
+* card ID: a 32-bit integer that is supposed to be unique within the
+  domain.
+
+During initialization, the applet generates an ECC private key and sets
+the event counter to zero.
+
+Initialization is only accepted if signed by administrative private key.
+
+It is possible to re-initialize, and the old private key is destroyed in
+that case.
+
+After initialization, the NFC chip is either attached to a specific
+equipment, or given to a person.
+
+When an NFC reader gets in contact with the chip, it sends a 32-byte
+hash to rhe chip, and the chip returns the information as follows:
+
+* event counter which is incremented by one;
+
+* domain ID and card ID
+
+* ECC signature for SHA256 of concatenated input hash, domain ID, card
+  ID, and the event counter.
+
+The NFC reader can also issue a command that returns the chip's public
+key, domain ID, card ID, and the current event counter.
+
+Note that the applet does not verify the input and signs whatever the
+other side supplies. So, it cannot be used, for example, for secure
+payments. 
+
+The purpose if this applet is to have the chip physically attached at a
+specific location, or to a specific piece of equipment. Depending on
+requirements, it can even be glued onto something.
+
+A worker or an operator needs to visit a place to do some maintenance
+work. The worker carries a mobile terminal with NFC reader. Once the
+worker has done the job, he or she collects the measurements or other
+important data, also a timestamp, and creates a report document. A hash
+of this document is signed by the applet attached to the serviced
+equipment. Upon returning, the worker submits the signature to the
+blockchain.
+
+The event counter prevents the worker from collecting reports in advance
+for the whole year. As described above, the maintenance procedure can
+include several checkins at different locations, and starting and
+finishing checkin would be done against a chip that is observed by
+independent parties.
 
 
 
