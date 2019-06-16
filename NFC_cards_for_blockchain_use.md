@@ -38,7 +38,7 @@ a cafe or restaurant are of little material value, not worth the effort
 of faking or duplicating the card ID.
 
 
-### Use case: fidelity points
+### Use case 1: fidelity points
 
 A customer pays at a crypto-friendly shop or cafe, and taps one of their
 NFC cards on the NFC reader. This can be any NFC-enabled card that the
@@ -78,6 +78,52 @@ reader should be phyically controlled by the shopkeeper. If a user wants
 to do any operation at home, we do not have any means to avoid spoofing.
 
 
+NFC Tags
+--------
+
+NFC Forum tag type 2, such as NXP NTAG215, can carry about 400 bytes of
+information. Typically such tags contain an URL that a smartphone would
+open automatically, or a contact card.
+
+The information on these tags can be protected by password, or the whole
+tag can be locked and become immutable.
+
+### Use case 2: transaction request tags
+
+A user taps an NFC tag (or scans a QR code), and the smartphone opens an
+URL. This URL downloads an EOSIO transaction request in a JSON file,
+accompanied by a special MIME type. This MIME type must be recognized by
+wallets as a transaction request. It would contain the following fields:
+
+* Chain ID to define for which EOSIO blockchain the request is made;
+
+* Contract name, action name;
+
+* Action arguments, with the user's accout name indicated as `$USER`.
+
+The wallet software interprets the data, substitutes the user account
+name, and prompts the user to approve the transaction, showing all the
+details.
+
+Only one action is allowed per request, in order to let the user have a
+full understanding of what is being requested.
+
+NFC tags also allow adding the chip's UID and an incrementing read
+counter to the URL. So, the server may utize this information and also
+use it in the transaction request arguments.
+
+At the moment there is no common MIME type that would be recognized by
+wallets, and the data format is not defined.
+
+Some work in this direction has been done by the following projects:
+
+* https://github.com/greymass/eosio-uri
+
+* https://github.com/southex/SimpleWallet
+
+
+
+
 
 Cards with encryption capabilities
 ----------------------------------
@@ -107,7 +153,7 @@ the key would be transmitted to the reader device. This may lead to a
 leakage of the private key if the device is tampered.
 
 
-### Use case: strong authentication on a trusted terminal
+### Use case 3: strong authentication on a trusted terminal
 
 The DESFire card is used to identify the user without supervision
 (contrary to the example above where user authentication has to be
@@ -136,7 +182,7 @@ information stored on the card is not completely secret, and it's
 possible to fake the data exchange if the terminal is tampered.
 
 
-### Use case: sequential offline timestamping
+### Use case 4: sequential offline timestamping
 
 In this scenario, a worker needs to visit a number of locations as a
 regular routine, in a defined sequence. The terminals in the field are
@@ -179,7 +225,7 @@ secured.
 
 
 
-### Use case: signature tag
+### Use case 5: signature tag
 
 A JCOP applet is initialized with the following parameters:
 
@@ -235,8 +281,8 @@ finishing checkin would be done against a chip that is observed by
 independent parties.
 
 If accompanied with a 2-factor authentication, such as SMS verification,
-this applet can also serve as user identity, and provide electronic KYC
-certificate.
+this applet can also serve as user identity, and provide an electronic
+KYC certificate.
 
 
 
