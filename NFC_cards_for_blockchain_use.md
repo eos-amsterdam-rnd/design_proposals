@@ -131,7 +131,7 @@ Cards with encryption capabilities
 MIFARE Classic chips are most common and widespread. Unfortunately their
 built-in cryptography algorithm is insecure, and it takes minutes on a
 common computer hardware to crack the protected information. Thus these
-cards are not suitable for anything seious, except for using their UID
+cards are not suitable for anything serious, except for using their UID
 as described above.
 
 
@@ -142,8 +142,8 @@ session that verifies that both sides have the same encryption key. As a
 result of challenge-response communication, a random session key is
 generated and used to read or write the data on the card.
 
-The secure area on the card may contain a number of data or value
-files. A data file can be read or written. A value can be incremented or
+Secure area on the card may contain a number of data or value files. A
+data file can be read or written. A value can be incremented or
 decremented in a transactional manner.
 
 Such cards are available on the market at approximately $1 a piece.
@@ -160,15 +160,16 @@ The DESFire card is used to identify the user without supervision
 happening in the presense of shopkeeper). Also this identification needs
 to be possible in an offline, isolated environment.
 
-The encryption AES-128 key is a combination of the 7-byte UID field and
+The AES-128 encryption key is a combination of the 7-byte UID field and
 a PIN number that is known to the user only.
 
-The protected area contains a user ID (such as eosio account name), and
-a digital certificate of trusted authority confirming the identity.
+Protected area on the card contains a user ID (such as eosio account
+name), and a digital certificate of trusted authority confirming the
+identity.
 
-Once the user taps the terminal with the NFC card, the terminal asks for
+Once the user taps a terminal with the NFC card, the terminal asks for
 the PIN. Then using the card UID and the PIN, the terminal derives the
-AES-128 password and retrieves the encrypted data.
+AES-128 password and retrieves encrypted data.
 
 Once the authentication has been successful, the terminal can perform an
 action on the blockchain, such as timestamping the user presence.
