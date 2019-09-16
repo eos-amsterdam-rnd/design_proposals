@@ -287,6 +287,46 @@ KYC certificate.
 
 
 
+### Use case 6: backup for mobile wallet
+
+Mobile smartphones are often used as transaction signing devices. But
+they are poorly protected from environment factors, such as water,
+mud, or dropping onto a hard surface.
+
+A JCOP smart card can serve as a backup for a mobile wallet. many
+different options are available, for example:
+
+1. Storing a copy of private key: the mobile wallet generates a
+keypair, and verifies that a trusted JCOP wallet is connected via
+NFC. Then a copy of the private key is transported to the card via
+secure channel. In case of emergency, the JCOP applet would be able to
+sign transactions.
+
+2. Generating a second keypair: EOSIO accounts allow multiple keys for
+every permission, a mobile wallet can request the JCOP card to
+generate a keypair, and add the card's public key to the account
+permissions when a new account is being created. In case of a loss of
+the phone, the card would be able to sign transactions (for example, a
+transaction that replaces the public keys).
+
+3. Backup with 2-factor authentication: the JCOP card stores a copy of
+the private key securely, and it stores an x509 certificate of a
+trusted 3rd party authority. Then the recovery procedure would require
+a valid x509 certificarte on the reader device. So, if the user has
+got a new phone, he or she requests a new cerficate from the trusted
+authority by using some kind of authentication or ID check. By
+presenting this certificate, the mobile phone would be able to extract
+the private key from the JCOP card and continue using the mobile
+wallet.
+
+
+
+
+
+
+
+
+
 
 
 ## Copyright and License
